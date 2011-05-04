@@ -17,3 +17,5 @@
    ;; If there is more than one, they won't work right.
    '(anything-command-map-prefix-key "\C-c\C-f"))
   )
+
+(server-start)
