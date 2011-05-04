@@ -18,11 +18,11 @@
   (set-fontset-font
    (frame-parameter nil 'font)
    'japanese-jisx0208
-   '("Hiragino Maru Gothic Pro" . "iso10646-1"))
+   '("Hiragino Kaku Gothic Pro" . "iso10646-1"))
   (set-fontset-font
    (frame-parameter nil 'font)
    'japanese-jisx0212
-   '("Hiragino Maru Gothic Pro" . "iso10646-1"))
+   '("Hiragino Kaku Gothic Pro" . "iso10646-1"))
  ;;; Unicode フォント
   (set-fontset-font
    (frame-parameter nil 'font)
