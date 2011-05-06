@@ -57,4 +57,17 @@
    '(anything-command-map-prefix-key "\C-c\C-f"))
  )
 
+(if window-system (progn
+  ;; 背景色を設定します。
+  (add-to-list 'default-frame-alist '(background-color . "lightgray"))
+  ;; カーソルの色を設定します。
+  (add-to-list 'default-frame-alist '(cursor-color . "dimgray"))
+  (add-to-list 'default-frame-alist '(height . 59))
+))
+
+;; auto-complete.el
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "/opt/local/share/emacs/site-lisp/ac-dict")
+(ac-config-default)
+
 (server-start)
