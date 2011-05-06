@@ -21,10 +21,17 @@ case ${UID} in
     PROMPT="%{${fg[white]}%}${HOST%%.*} ${PROMPT}"
   ;;
 *)
-  PROMPT="%{${fg[red]}%}%n@%m[%.]%%%{${reset_color}%} "
-  RPROMPT="[%{${fg[red]}%}%(5~,%-2~/.../%2~,%~)%{${reset_color}%}]"
-  PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
-  SPROMPT="%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
+  if [ "x$TERM" = "xdumb" ] ; then
+    PROMPT="[%.]%% "
+    RPROMPT=""
+    PROMPT2="%_%% "
+    SPROMPT="%r is correct? [n,y,a,e]: "
+  else
+    PROMPT="%{${fg[red]}%}%n@%m[%.]%%%{${reset_color}%} "
+    RPROMPT="[%{${fg[red]}%}%(5~,%-2~/.../%2~,%~)%{${reset_color}%}]"
+    PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
+    SPROMPT="%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
+  fi
   [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] &&
     PROMPT="%{${fg[white]}%}${HOST%%.*} ${PROMPT}"
   ;;
@@ -102,7 +109,7 @@ linux*)
   ;;
 esac
 
-alias l="ls -F"
+alias l="ls -lF"
 alias ll="ls -lF"
 alias la="ls -laF"
 
