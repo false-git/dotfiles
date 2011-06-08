@@ -70,4 +70,6 @@
 (add-to-list 'ac-dictionary-directories "/opt/local/share/emacs/site-lisp/ac-dict")
 (ac-config-default)
 
+(add-to-list 'exec-path "/opt/local/bin")
+
 (server-start)
