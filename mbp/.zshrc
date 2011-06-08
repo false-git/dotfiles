@@ -53,13 +53,18 @@ setopt correct
 #
 setopt list_packed
 
-# no remove postfix slash of command line
+# remove postfix slash of command line
 #
-setopt noautoremoveslash
+setopt auto_remove_slash
 
 # no beep sound when complete list displayed
 #
 setopt nolistbeep
+
+setopt pushd_ignore_dups
+
+# コマンドラインの引数で --PREFIX=/USR などの = 以降でも補完できる
+setopt magic_equal_subst
 
 ## Keybind configuration
 #
@@ -113,6 +118,8 @@ alias l="ls -lF"
 alias ll="ls -lF"
 alias la="ls -laF"
 
+alias c="clear"
+
 alias cx="cd .."
 alias cxx="cd ../.."
 
@@ -122,6 +129,8 @@ alias du="du -h"
 alias df="df -h"
 
 alias su="su -l"
+
+alias top="top -o cpu"
 
 ## terminal configuration
 #
@@ -157,6 +166,8 @@ kterm*|xterm*)
     'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
   ;;
 esac
+
+cdpath=(~ ..)
 
 ## load user .zshrc configuration file
 #
