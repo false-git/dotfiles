@@ -169,6 +169,18 @@ esac
 
 cdpath=(~ ..)
 
+agent="$HOME/tmp/ssh-agent-$USER"
+if [ -S "$SSH_AUTH_SOCK" ]; then
+	case $SSH_AUTH_SOCK in
+	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners)
+		ln -snf "$SSH_AUTH_SOCK" $agent && export SSH_AUTH_SOCK=$agent
+	esac
+elif [ -S $agent ]; then
+	export SSH_AUTH_SOCK=$agent
+else
+	echo "no ssh-agent"
+fi
+
 ## load user .zshrc configuration file
 #
 [ -f ~/.zshrc.mine ] && source ~/.zshrc.mine
