@@ -32,9 +32,9 @@ case ${UID} in
     PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
     SPROMPT="%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
   fi
-  [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] &&
-    PROMPT="%{${fg[white]}%}${HOST%%.*} ${PROMPT}"
-  ;;
+#  [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] &&
+#    PROMPT="%{${fg[white]}%}${HOST%%.*} ${PROMPT}"
+#  ;;
 esac
 
 # auto change directory
