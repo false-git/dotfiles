@@ -6,3 +6,7 @@ else
     PATH=$OPATH
 fi
 export PATH=$HOME/bin:/opt/local/bin:/opt/local/sbin:$PATH
+
+## load user .zshenv configuration file
+#
+[ -f ~/.zshenv.mine ] && source ~/.zshenv.mine
