@@ -9,6 +9,7 @@
 (setq require-final-newline t) ; 最終行には必ず改行コードを入れる
 (setq browse-url-browser-function 'w3m-browse-url) ; w3m使う
 (setq display-time-day-and-date t) ; 日時を表示
+(if window-system nil (menu-bar-mode -1))
 (display-time) ; モードラインに日時を表示
 (server-start) ; emacsclient用にemacs-server起動
 
