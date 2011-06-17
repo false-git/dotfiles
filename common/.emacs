@@ -158,7 +158,8 @@ in or out whenever you toggle the read-only flag."
 (condition-case err
     (progn
       (require 'auto-complete-config)
-      (add-to-list 'ac-dictionary-directories "/opt/local/share/emacs/site-lisp/ac-dict")
+      (add-to-list 'ac-dictionary-directories "/opt/local/share/emacs/site-lisp/ac-dict") ; Mac OS X
+      (add-to-list 'ac-dictionary-directories "/usr/local/share/emacs/site-lisp/ac-dict") ; FreeBSD
       (ac-config-default)
       )
   (file-error (message "%s" (error-message-string err)))
