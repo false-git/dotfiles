@@ -10,6 +10,7 @@
 (setq browse-url-browser-function 'w3m-browse-url) ; w3m使う
 (setq display-time-day-and-date t) ; 日時を表示
 (if window-system nil (menu-bar-mode -1))
+(setq vc-follow-symlinks t) ; Version controlされたファイルに対するsymbolic link を開くときは、ファイルの実体を開く
 (display-time) ; モードラインに日時を表示
 (server-start) ; emacsclient用にemacs-server起動
 
