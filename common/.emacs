@@ -217,10 +217,29 @@ in or out whenever you toggle the read-only flag."
   (file-error (message "%s" (error-message-string err)))
 )
 
+;; zencoding用の設定
+(condition-case err
+    (progn
+      (require 'zencoding-mode)
+      (add-hook 'html-mode-hook 'zencoding-mode)
+      )
+  (file-error (message "%s" (error-message-string err)))
+)
+
+;; yasnippetの設定
+(condition-case err
+    (progn
+      (require 'yasnippet)
+      (yas/initialize)
+      (yas/load-directory "~/.emacs.d/snippets")
+      (setq yas/prompt-functions '(yas/dropdown-prompt))
+      )
+  (file-error (message "%s" (error-message-string err)))
+)
+
+
 ;; 個別環境用設定の読み込み
 (condition-case err
     (load-file "$HOME/.emacs.local")
   (file-error (message "%s" (error-message-string err)))
 )
-
-

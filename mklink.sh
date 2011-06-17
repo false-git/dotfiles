@@ -23,6 +23,10 @@ ln -s `pwd`/$i $HOME/
 done
 cd ..
 
+mkdir -p $HOME/.emacs.d
+rm -f $HOME/.emacs.d/snippets
+ln -s `pwd`/yasnippet/snippets $HOME/.emacs.d/
+
 if [ -d "$1" ]
 then
 echo $1/
