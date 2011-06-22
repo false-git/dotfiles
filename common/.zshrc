@@ -66,7 +66,10 @@ setopt pushd_ignore_dups
 # コマンドラインの引数で --PREFIX=/USR などの = 以降でも補完できる
 setopt magic_equal_subst
 
+# rm * で警告しない
 setopt rm_star_silent
+# TAB で最初の候補を自動的に選択しない
+setopt no_auto_menu
 
 ## Keybind configuration
 #
