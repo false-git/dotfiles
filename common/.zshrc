@@ -66,6 +66,8 @@ setopt pushd_ignore_dups
 # コマンドラインの引数で --PREFIX=/USR などの = 以降でも補完できる
 setopt magic_equal_subst
 
+setopt rm_star_silent
+
 ## Keybind configuration
 #
 # emacs like keybind (e.x. Ctrl-a goes to head of a line and Ctrl-e goes
