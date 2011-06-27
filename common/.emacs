@@ -146,7 +146,7 @@ in or out whenever you toggle the read-only flag."
     (progn
       (require 'anything-startup)
       (anything-iswitchb-setup)
-					;  (global-set-key "\^x\^f" 'anything-filelist+)
+      ;  (global-set-key "\^x\^f" 'anything-filelist+)
       (define-key anything-map "\C-p" 'anything-previous-line)
       (define-key anything-map "\C-n" 'anything-next-line)
       (define-key anything-map "\C-v" 'anything-next-page)
@@ -170,6 +170,7 @@ in or out whenever you toggle the read-only flag."
 ;; wanderlust用の設定
 (condition-case err
     (progn
+      (setq mime-setup-use-signature nil)
       (require 'wanderlust-startup)
       (global-set-key "\C-xm" 'wl-draft)
       (global-set-key "\C-xr" 'wl)
