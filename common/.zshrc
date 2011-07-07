@@ -113,6 +113,7 @@ alias j="jobs -l"
 case "${OSTYPE}" in
 freebsd*|darwin*)
   alias ls="ls -G -w"
+  alias top="top -o cpu"
   ;;
 linux*)
   alias ls="ls --color"
@@ -134,8 +135,6 @@ alias du="du -h"
 alias df="df -h"
 
 alias su="su -l"
-
-alias top="top -o cpu"
 
 ## terminal configuration
 #
@@ -175,16 +174,16 @@ esac
 cdpath=(~ ..)
 
 agent="$HOME/tmp/ssh-agent-$USER"
-if [ -S "$SSH_AUTH_SOCK" ]; then
+if [ -S $agent ]; then
+elif [ -S "$SSH_AUTH_SOCK" ]; then
 	case $SSH_AUTH_SOCK in
 	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners)
-		ln -snf "$SSH_AUTH_SOCK" $agent && export SSH_AUTH_SOCK=$agent
+		ln -snf "$SSH_AUTH_SOCK" $agent
 	esac
-elif [ -S $agent ]; then
-	export SSH_AUTH_SOCK=$agent
 else
 	echo "no ssh-agent"
 fi
+export SSH_AUTH_SOCK=$agent
 
 ## load user .zshrc configuration file
 #
