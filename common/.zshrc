@@ -177,7 +177,7 @@ agent="$HOME/tmp/ssh-agent-$USER"
 if [ -S $agent ]; then
 elif [ -S "$SSH_AUTH_SOCK" ]; then
 	case $SSH_AUTH_SOCK in
-	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners)
+	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners|/tmp/keyring-*/ssh)
 		ln -snf "$SSH_AUTH_SOCK" $agent
 	esac
 else
