@@ -8,7 +8,8 @@
 (setq next-line-add-newlines t) ; 最終行でカーソルの下/C-n で行追加
 (setq require-final-newline t) ; 最終行には必ず改行コードを入れる
 (setq browse-url-browser-function 'w3m-browse-url) ; w3m使う
-(setq display-time-day-and-date t) ; 日時を表示
+;(setq display-time-day-and-date t) ; 日時を表示
+(setq display-time-format "%H:%M %m/%d") ; 日時のフォーマット指定
 (if window-system nil (menu-bar-mode -1))
 (setq vc-follow-symlinks t) ; Version controlされたファイルに対するsymbolic link を開くときは、ファイルの実体を開く
 (display-time) ; モードラインに日時を表示
