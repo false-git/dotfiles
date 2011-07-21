@@ -112,7 +112,7 @@ alias j="jobs -l"
 
 case "${OSTYPE}" in
 freebsd*|darwin*)
-  alias ls="ls -G -w"
+  alias ls="ls -GwF"
   alias top="top -o cpu"
   ;;
 linux*)
