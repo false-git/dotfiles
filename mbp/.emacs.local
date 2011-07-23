@@ -1,6 +1,6 @@
-;; macÍÑ¥³¡¼¥É
+;; macç”¨ã‚³ãƒ¼ãƒ‰
 (when (>= emacs-major-version 23)
-  ;; Emacs 23ÀìÍÑ¥³¡¼¥É
+  ;; Emacs 23å°‚ç”¨ã‚³ãƒ¼ãƒ‰
   (define-key global-map [ns-drag-file] 'ns-find-file)
   (setq fixed-width-use-QuickDraw-for-ascii t)
   (setq mac-allow-anti-aliasing t)
@@ -15,20 +15,20 @@
    (frame-parameter nil 'font)
    'japanese-jisx0212
    '("Hiragino Kaku Gothic Pro" . "iso10646-1"))
- ;;; Unicode ¥Õ¥©¥ó¥È
+ ;;; Unicode ãƒ•ã‚©ãƒ³ãƒˆ
   (set-fontset-font
    (frame-parameter nil 'font)
    'mule-unicode-0100-24ff
    '("monaco" . "iso10646-1"))
-;;; ¥­¥ê¥ë¡¤¥®¥ê¥·¥¢Ê¸»úÀßÄê
-;;; Ãí°Õ¡§ ¤³¤ÎÀßÄê¤À¤±¤Ç¤Ï¸ÅÂå¥®¥ê¥·¥¢Ê¸»ú¡¢¥³¥×¥ÈÊ¸»ú¤ÏÉ½¼¨¤Ç¤­¤Ê¤¤
-;;; http://socrates.berkeley.edu/~pinax/greekkeys/NAUdownload.html ¤¬É¬Í×
-;;; ¥­¥ê¥ëÊ¸»ú
+;;; ã‚­ãƒªãƒ«ï¼Œã‚®ãƒªã‚·ã‚¢æ–‡å­—è¨­å®š
+;;; æ³¨æ„ï¼š ã“ã®è¨­å®šã ã‘ã§ã¯å¤ä»£ã‚®ãƒªã‚·ã‚¢æ–‡å­—ã€ã‚³ãƒ—ãƒˆæ–‡å­—ã¯è¡¨ç¤ºã§ããªã„
+;;; http://socrates.berkeley.edu/~pinax/greekkeys/NAUdownload.html ãŒå¿…è¦
+;;; ã‚­ãƒªãƒ«æ–‡å­—
   (set-fontset-font
    (frame-parameter nil 'font)
    'cyrillic-iso8859-5
    '("monaco" . "iso10646-1"))
-;;; ¥®¥ê¥·¥¢Ê¸»ú
+;;; ã‚®ãƒªã‚·ã‚¢æ–‡å­—
   (set-fontset-font
    (frame-parameter nil 'font)
    'greek-iso8859-7
@@ -44,12 +44,45 @@
  )
 
 (if window-system (progn
-  ;; ÇØ·Ê¿§¤òÀßÄê¤·¤Ş¤¹¡£
+  ;; èƒŒæ™¯è‰²ã‚’è¨­å®šã—ã¾ã™ã€‚
   (add-to-list 'default-frame-alist '(background-color . "lightgray"))
-  ;; ¥«¡¼¥½¥ë¤Î¿§¤òÀßÄê¤·¤Ş¤¹¡£
+  ;; ã‚«ãƒ¼ã‚½ãƒ«ã®è‰²ã‚’è¨­å®šã—ã¾ã™ã€‚
   (add-to-list 'default-frame-alist '(cursor-color . "dimgray"))
   (add-to-list 'default-frame-alist '(height . 59))
 ))
 
+(add-hook 'objc-mode-hook 'my-c-def)
 
 (add-to-list 'exec-path "/opt/local/bin")
+(add-to-list 'exec-path "~/bin")
+
+;; C-cwã§é¸æŠã—ãŸæ–‡å­—åˆ—ã‚’è¾æ›¸ã§å¼•ãåˆ¥ãƒãƒƒãƒ•ã‚¡ã«è¡¨ç¤ºã—ã¾ã™ã€‚
+(defun dictionary ()
+ "dictionary.app"
+ (interactive)
+
+ (let ((editable (not buffer-read-only))
+       (pt (save-excursion (mouse-set-point last-nonmenu-event)))
+       beg end)
+
+   (if (and mark-active
+            (<= (region-beginning) pt) (<= pt (region-end)) )
+       (setq beg (region-beginning)
+             end (region-end))
+     (save-excursion
+       (goto-char pt)
+       (setq end (progn (forward-word) (point)))
+       (setq beg (progn (backward-word) (point)))
+       ))
+
+   (setq word (buffer-substring-no-properties beg end))
+   (let ((win (selected-window))
+         (tmpbuf " * dict-process *"))
+     (pop-to-buffer tmpbuf)
+     (erase-buffer)
+     (insert word "\n")
+     (start-process "dict-process" tmpbuf "dict" word)
+     (select-window win)
+     )
+ ))
+ (define-key global-map (kbd "C-c w") 'dictionary)
