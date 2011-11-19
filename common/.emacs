@@ -239,6 +239,14 @@ in or out whenever you toggle the read-only flag."
   (file-error (message "%s" (error-message-string err)))
 )
 
+;; xcscopeの設定
+(condition-case err
+    (progn
+      (require 'xcscope)
+      )
+  (file-error (message "%s" (error-message-string err)))
+)
+
 
 ;; 個別環境用設定の読み込み
 (condition-case err
