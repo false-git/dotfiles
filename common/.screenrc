@@ -140,3 +140,6 @@ bind ^] paste [.]
 caption splitonly "%{+r ky}%3n %t%? @%u%?%? [%h]%?%=%{-}"
 
 hardstatus lastline "%w"
+
+# enable mouse scroll on Terminal.app
+termcapinfo xterm* ti@:te@
