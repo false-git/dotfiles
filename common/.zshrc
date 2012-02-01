@@ -174,6 +174,10 @@ esac
 cdpath=(~ ..)
 
 agent="$HOME/tmp/ssh-agent-$USER"
+lockfile="$HOME/tmp/ssh-agent-lock"
+if [ -x /usr/bin/lockfile ]; then
+    /usr/bin/lockfile $lockfile
+fi
 if [ -S $agent ]; then
 elif [ -S "$SSH_AUTH_SOCK" ]; then
 	case $SSH_AUTH_SOCK in
@@ -184,6 +188,9 @@ else
 	echo "no ssh-agent"
 fi
 export SSH_AUTH_SOCK=$agent
+if [ -f $lockfile ]; then
+    rm -f $lockfile
+fi
 
 ## load user .zshrc configuration file
 #
