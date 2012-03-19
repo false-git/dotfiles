@@ -184,10 +184,10 @@ elif [ -S "$SSH_AUTH_SOCK" ]; then
 	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners|/tmp/keyring-*/ssh)
 		ln -snf "$SSH_AUTH_SOCK" $agent
 	esac
+	export SSH_AUTH_SOCK=$agent
 else
 	echo "no ssh-agent"
 fi
-export SSH_AUTH_SOCK=$agent
 if [ -f $lockfile ]; then
     rm -f $lockfile
 fi
