@@ -257,6 +257,11 @@ in or out whenever you toggle the read-only flag."
       (setq org-mobile-directory "~/Dropbox/MobileOrg/")
       (setq org-agenda-files (list org-default-notes-file org-mobile-inbox-for-pull (concat org-directory "/memo.org")))
       (setq org-log-done 'time) ; TODOがDONEになったときに時刻を記録
+      (setq org-capture-templates
+	    '(
+	      ("t" "Task" entry (file+headline "" "Tasks")
+	       "* TODO %?\n  CREATED: %U\n  SCHEDULED: %t\n  DEADLINE: %t\n  %a")
+	      ))
       (global-set-key "\C-cl" 'org-store-link)
       (global-set-key "\C-cc" 'org-capture)
       (global-set-key "\C-ca" 'org-agenda)
