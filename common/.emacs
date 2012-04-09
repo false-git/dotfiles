@@ -268,21 +268,8 @@ in or out whenever you toggle the read-only flag."
       (global-set-key "\C-cb" 'org-iswitchb)
       (defadvice org-mobile-push (around org-mobile-push-safe activate)
 	"もしコンフリクトがあれば一覧を表示する。
-そうで無ければ、全ファイルをTODO順にソートし、余分な入力日時を除去し、プッシュする。"
+そうで無ければ、プッシュする。"
 	(when (org-occur-in-agenda-files "^\\*\\* End of edit$")
-	  (dolist (file (org-agenda-files))
-	    (with-current-buffer (find-file-noselect file)
-	      (let ((before (buffer-substring-no-properties (point-min) (point-max))))
-		(goto-char (point-min))
-		(while (re-search-forward "^\\[[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} . [0-9]\\{2\\}:[0-9]\\{2\\}\\]\n" nil t)
-		  (replace-match "" t))
-		(condition-case nil
-		    (org-sort-entries nil ?o)
-		  (error nil))
-		(if (string= before (buffer-substring-no-properties (point-min) (point-max)))
-		    (set-buffer-modified-p nil)
-		  (save-buffer))
-		)))
 	  ad-do-it
 	  )
 	)
