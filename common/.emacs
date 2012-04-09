@@ -118,7 +118,7 @@ in or out whenever you toggle the read-only flag."
 (global-set-key "\^x\^p" 'find-matching-paren) ; C-x C-p で対応する括弧に飛ぶ
 (global-set-key "\^x\^g" 'goto-line) ; C-x C-g で goto-line
 (global-set-key [delete] 'backward-delete-char) ; Deleteキーでdel
-(global-set-key "\C-ca" 'insert-accessor-region) ; C-c a でaccessor追加
+(global-set-key "\C-c\C-a" 'insert-accessor-region) ; C-c a でaccessor追加
 (global-set-key "\C-l" 'recenter) ; C-l でrecenter
 (global-set-key "\C-x\C-q" 'my-toggle-read-only)
 
@@ -247,6 +247,89 @@ in or out whenever you toggle the read-only flag."
   (file-error (message "%s" (error-message-string err)))
 )
 
+;; org-mode, rememberの設定
+(condition-case err
+    (progn
+      (require 'org)
+      (setq org-default-notes-file (concat org-directory "/notes.org"))
+      (setq remember-data-file org-default-notes-file)
+      (setq org-mobile-inbox-for-pull (concat org-directory "/flagged.org"))
+      (setq org-mobile-directory "~/Dropbox/MobileOrg/")
+      (setq org-agenda-files (list org-default-notes-file org-mobile-inbox-for-pull (concat org-directory "/memo.org")))
+      (setq org-log-done 'time) ; TODOがDONEになったときに時刻を記録
+      (global-set-key "\C-cl" 'org-store-link)
+      (global-set-key "\C-cc" 'org-capture)
+      (global-set-key "\C-ca" 'org-agenda)
+      (global-set-key "\C-cb" 'org-iswitchb)
+      (defadvice org-mobile-push (around org-mobile-push-safe activate)
+	"もしコンフリクトがあれば一覧を表示する。
+そうで無ければ、全ファイルをTODO順にソートし、余分な入力日時を除去し、プッシュする。"
+	(when (org-occur-in-agenda-files "^\\*\\* End of edit$")
+	  (dolist (file (org-agenda-files))
+	    (with-current-buffer (find-file-noselect file)
+	      (let ((before (buffer-substring-no-properties (point-min) (point-max))))
+		(goto-char (point-min))
+		(while (re-search-forward "^\\[[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} . [0-9]\\{2\\}:[0-9]\\{2\\}\\]\n" nil t)
+		  (replace-match "" t))
+		(condition-case nil
+		    (org-sort-entries nil ?o)
+		  (error nil))
+		(if (string= before (buffer-substring-no-properties (point-min) (point-max)))
+		    (set-buffer-modified-p nil)
+		  (save-buffer))
+		)))
+	  ad-do-it
+	  )
+	)
+
+      (defadvice org-mobile-pull (around org-mobile-pull-and-push activate)
+	"mobileorg.orgに何かデータが入っていれば、プル＆プッシュする。"
+	(when (<= 2 (nth 7 (file-attributes (expand-file-name org-mobile-capture-file org-mobile-directory))))
+	  ad-do-it
+	  (org-mobile-push)
+	  )
+	)
+
+      (defun run-with-idle-timer-interval (secs repeat interval function &rest args)
+	"run-with-idle-timerとほぼ同じだが、IDLE中は継続してINTERVAL秒毎に実行される点が異なる。"
+	(lexical-let* ((interval-timer nil)
+		       (wakeup-timer nil)
+		       (last-idle-time nil)
+		       (interval interval)
+		       (function function)
+		       (args args)
+		       (interval-function #'(lambda ()
+					      (cond ((not (memq wakeup-timer timer-idle-list)) (cancel-timer interval-timer))
+						    ((and last-idle-time (time-less-p (current-idle-time) last-idle-time)) (cancel-timer interval-timer))
+						    (t (apply function args))
+						    )
+					      (setq last-idle-time (current-idle-time))
+					      ))
+		       (wakeup-function #'(lambda ()
+					    (if (memq interval-timer timer-list) (cancel-timer interval-timer))
+					    (setq last-idle-time nil)
+					    (setq interval-timer (run-at-time 0 interval interval-function))
+					    ))
+		       )
+	  (setq wakeup-timer (run-with-idle-timer secs repeat wakeup-function))
+	  ))
+      (setq org-mobile-pull-timer (run-with-idle-timer-interval 10 t 30 #'(lambda () (org-mobile-pull))))
+      (add-hook 'kill-emacs-hook
+		#'(lambda ()
+		    ;; 更新されたファイルがあったらプッシュする
+		    (let ((csfile (expand-file-name "checksums.dat" org-mobile-directory))
+			  (files (org-agenda-files))
+			  found)
+		      (while (and files (not found))
+			(setq found (file-newer-than-file-p (car files) csfile))
+			(setq files (cdr files)))
+		      (when found
+			(org-mobile-push))
+		      )
+		    ))
+      )
+  (file-error (message "%s" (error-message-string err)))
+)
 
 ;; 個別環境用設定の読み込み
 (condition-case err
