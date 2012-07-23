@@ -48,7 +48,7 @@
   (add-to-list 'default-frame-alist '(background-color . "lightgray"))
   ;; カーソルの色を設定します。
   (add-to-list 'default-frame-alist '(cursor-color . "dimgray"))
-  (add-to-list 'default-frame-alist '(height . 59))
+  (add-to-list 'default-frame-alist '(height . 54))
 ))
 
 (add-hook 'objc-mode-hook 'my-c-def)
@@ -86,3 +86,4 @@
      )
  ))
  (define-key global-map (kbd "C-c w") 'dictionary)
+(tool-bar-mode 0)
