@@ -1,0 +1,92 @@
+noremap j 5j
+noremap k 5k
+cmap <Down> <Tab>
+cmap <Up> <S-Tab>
+
+let g:plugin_loader_roots = "~/Dropbox/vimperator/vimperator-plugins/ ~/prj/vimperator-plugins/"
+let g:plugin_loader_plugins = "_libly,feedSomeKeys_3,statusline-toolbar,ldrize_cooperation,migemo_completion,migemized_find,sbmcommentsviewer,copyurl,tombloo,x-hint,google-plus-commando"
+"let g:plugin_loader_plugins = "_libly,feedSomeKeys_3,statusline-toolbar,ldrize_cooperation,migemo_completion"
+
+" Options
+hi StatusLine backgroud: #bbb;
+
+"set hintmatching=custom
+
+" command
+" ======================================================================
+" autocmd VimperatorEnter .* <args> を lazy コマンドとして登録
+command! -nargs=+ lazy autocmd VimperatorEnter .* <args>
+
+" Abbreviations
+
+source! ~/_vimperatorrc.local
+
+" ページロード時にテキストボックスにフォーカスするのを防ぐ
+set focuscontent
+
+" ldrize_cooperation.js
+let g:ldrc_captureMappings = "['j','k','p','o','?']"
+" let g:ldrc_enable="false"
+"let g:ldrc_intelligence_bind = "true"
+"let g:ldrc_skip = "0"
+map , :toggleldrizecooperation<CR>
+" nnoremap , :toggleldrc<CR>
+
+" feedSomeKeys_3.js
+" Gmail
+lazy fmaps -u='^https?://mail\.google\.com/(mail|a)/' c j k n p o u e x s r a # [ ] z ? gi gs gt gd ga gc
+lazy fmaps -u='^https?://www\.google\.(com|jp)/' c j k n p o u e x s t r a # [ ] z ? gi gs gt gd ga gc
+"lazy fmaps -u='^https?://plus\.google\.(com|jp)/' c n p o u e x s t r a # [ ] z ? gi gs gt gd ga gc
+" Tumblr (use: tombloo.xpi, dashboard+tombloo.user.js, reblogcommand.user.js, playontumblr.user.js, tumblr_life.user.js)
+lazy fmaps -u='^http://[^\./]*\.tumblr\.com/' j k o p n,h, r,t I,a <C-i>,e
+" LDR/Fastladder (use: tombloo.xpi, ldr+tombloo.user.js, ldr_relative_rate.user.js)
+lazy fmaps -u='^http://(reader\.livedoor|fastladder)\.com/reader/' j k s a p v c z <S-z> ,r,r < > o,vj J,<Space> K,<S-Space> q w g
+lazy fmaps -u='^https?://fl\.wizard-limit\.net/reader/' j k s a p o v c z r <S-z> ,r,r < > J,<Space> K,<S-Space> q w g
+lazy fmaps -u='^http://(reader\.livedoor|fastladder)\.com/reader/' -events=vkeypress T
+" iview
+lazy fmaps -u='^chrome://iviewfx/content/iview\.html' j k s a z o i,tj p
+" はてブ
+lazy fmaps -u='^http://b\.hatena\.ne\.jp/(?!(entry|articles|guide))' j k o,oj e a,b
+
+" google-plus-commando
+let g:gplus_commando_map_next            = "j"
+let g:gplus_commando_map_prev            = "k"
+let g:gplus_commando_map_share           = "s"
+let g:gplus_commando_map_plusone         = "p"
+let g:gplus_commando_map_comment         = "c"
+let g:gplus_commando_map_post            = "C"
+let g:gplus_commando_map_yank            = "y"
+let g:gplus_commando_map_notification    = "n"
+let g:gplus_commando_map_submit          = "<C-CR>"
+let g:gplus_commando_map_cancel          = "<Esc>"
+let g:gplus_commando_map_unfold          = "e"
+let g:gplus_commando_map_menu            = "m"
+
+" :[tab]open コマンドで補完する候補と順番
+set complete=slS
+
+" d で前のタブに戻る
+map d <M-w>
+
+nnoremap b :viewSBMComments<CR>
+
+" Greasemonkey 0.9.13 patch
+" cf.http://d.hatena.ne.jp/littlefolk/20110625/p1
+js <<EOM
+autocommands.add(
+  'VimperatorEnter', '.*',
+  function () {
+    let Cc = Components.classes['@greasemonkey.mozdev.org/greasemonkey-service;1'];
+    if (Cc) {
+      Cc = Cc.getService().wrappedJSObject;
+      if (Cc.injectScripts.toSource().search('sharedWindow') == -1) {
+        Cc.injectScripts = liberator.eval(
+          Cc.injectScripts.toSource()
+            .replace(/(?=(?:var|let) (?:firebugConsole))/,'var sharedObject = {};')
+            .replace(/(?=var requires)/, 'sandbox.sharedObject = sharedObject;')
+            .replace(/(?=}$)/, 'return sharedObject;'),
+        Cc.injectScripts);
+      };
+    };
+  });
+EOM
