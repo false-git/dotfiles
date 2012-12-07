@@ -4,7 +4,7 @@ cmap <Down> <Tab>
 cmap <Up> <S-Tab>
 
 let g:plugin_loader_roots = "~/Dropbox/vimperator/vimperator-plugins/ ~/prj/vimperator-plugins/"
-let g:plugin_loader_plugins = "_libly,feedSomeKeys_3,statusline-toolbar,ldrize_cooperation,migemo_completion,migemized_find,sbmcommentsviewer,copyurl,tombloo,x-hint,google-plus-commando"
+let g:plugin_loader_plugins = "_libly,feedSomeKeys_3,statusline-toolbar,ldrize_cooperation,sbmcommentsviewer,copyurl,tombloo,x-hint,google-plus-commando"
 "let g:plugin_loader_plugins = "_libly,feedSomeKeys_3,statusline-toolbar,ldrize_cooperation,migemo_completion"
 
 " Options
@@ -70,8 +70,8 @@ map d <M-w>
 
 nnoremap b :viewSBMComments<CR>
 
-" Greasemonkey 0.9.13 patch
-" cf.http://d.hatena.ne.jp/littlefolk/20110625/p1
+" Greasemonkey 1.5 patch
+" cf. http://d.hatena.ne.jp/t_f_m/20121126/1353860818
 js <<EOM
 autocommands.add(
   'VimperatorEnter', '.*',
@@ -79,12 +79,12 @@ autocommands.add(
     let Cc = Components.classes['@greasemonkey.mozdev.org/greasemonkey-service;1'];
     if (Cc) {
       Cc = Cc.getService().wrappedJSObject;
-      if (Cc.injectScripts.toSource().search('sharedWindow') == -1) {
+      if (Cc.injectScripts.toSource().search('sharedObject') == -1) {
         Cc.injectScripts = liberator.eval(
           Cc.injectScripts.toSource()
-            .replace(/(?=(?:var|let) (?:firebugConsole))/,'var sharedObject = {};')
-            .replace(/(?=var requires)/, 'sandbox.sharedObject = sharedObject;')
-            .replace(/(?=}$)/, 'return sharedObject;'),
+            .replace(/(?=(?:var|let) (?:firebugConsole))/,  'var sharedObject = {\n    Minibuffer:null,\n    LDRize:null,\n    AutoPagerize:null,\n    __exposedProps__:{\n      Minibuffer:"rw",\n      LDRize:"rw",\n      AutoPagerize:"rw"}};\n  ')
+            .replace(/(?=runScriptInSandbox\()/, 'sandbox.sharedObject = sharedObject;\n    ')
+            .replace(/(?:}\)$)/, '  return sharedObject;\n})'),
         Cc.injectScripts);
       };
     };
