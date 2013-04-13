@@ -92,3 +92,30 @@
 (setq locale-coding-system 'utf-8-hfs)
 
 (tool-bar-mode 0)
+
+;;
+;; mew
+(autoload 'mew "mew" nil t)
+(autoload 'mew-send "mew" nil t)
+
+;; Optional setup (Read Mail menu):
+(setq read-mail-command 'mew)
+
+;; Optional setup (e.g. C-xm for sending a message):
+(autoload 'mew-user-agent-compose "mew" nil t)
+(if (boundp 'mail-user-agent)
+    (setq mail-user-agent 'mew-user-agent))
+(if (fboundp 'define-mail-user-agent)
+    (define-mail-user-agent
+      'mew-user-agent
+      'mew-user-agent-compose
+      'mew-draft-send-message
+      'mew-draft-kill
+      'mew-send-hook))
+;; (setq mew-name "your name") ;; (user-full-name)
+;; (setq mew-user "user name of e-mail address") ;; (user-login-name)
+(setq mew-mail-domain "wizard-limit.net")
+(setq mew-smtp-server "sv.wizard-limit.net")
+(setq mew-proto "%")
+;; (setq mew-imap-user "your IMAP account")  ;; (user-login-name)
+(setq mew-imap-server "sv.wizard-limit.net")
