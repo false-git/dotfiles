@@ -323,6 +323,15 @@ in or out whenever you toggle the read-only flag."
   (file-error (message "%s" (error-message-string err)))
 )
 
+;; go-mode
+(condition-case err
+    (require 'go-mode-load)
+  (file-error (message "%s" (error-message-string err)))
+)
+
+;; multi-term
+(autoload 'multi-term "multi-term" "multi-term" t)
+
 ;; 個別環境用設定の読み込み
 (condition-case err
     (load-file "$HOME/.emacs.local")
