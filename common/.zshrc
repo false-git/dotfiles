@@ -179,6 +179,10 @@ if [ -x /usr/bin/lockfile ]; then
     /usr/bin/lockfile $lockfile
 fi
 if [ -S $agent ]; then
+	if [ "x$SSH_AUTH_SOCK" != "x" ]; then
+		export SSH_AUTH_SOCK_ORIG=$SSH_AUTH_SOCK
+	fi
+	export SSH_AUTH_SOCK=$agent
 elif [ -S "$SSH_AUTH_SOCK" ]; then
 	case $SSH_AUTH_SOCK in
 	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners|/tmp/keyring-*/ssh)
