@@ -179,14 +179,22 @@ if [ -x /usr/bin/lockfile ]; then
     /usr/bin/lockfile $lockfile
 fi
 if [ -S $agent ]; then
-	if [ "x$SSH_AUTH_SOCK" != "x" ]; then
-		export SSH_AUTH_SOCK_ORIG=$SSH_AUTH_SOCK
+	if [ "x$SSH_AUTH_SOCK" != "x$agent" ]; then
+		export SSH_AUTH_SOCK_ORIG=`readlink $agent`
+		if [ "x$SSH_AUTH_SOCK" != "x$SSH_AUTH_SOCK_ORIG" ]; then
+		    rm -f $agent
+		    ln -snf "$SSH_AUTH_SOCK" $agent
+		    echo "relink $agent from $SSH_AUTH_SOCK_ORIG to $SSH_AUTH_SOCK"
+		else
+		    echo "reuse link $agent to $SSH_AUTH_SOCK_ORIG"
+		fi
 	fi
 	export SSH_AUTH_SOCK=$agent
 elif [ -S "$SSH_AUTH_SOCK" ]; then
 	case $SSH_AUTH_SOCK in
 	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners|/tmp/keyring-*/ssh)
 		ln -snf "$SSH_AUTH_SOCK" $agent
+		echo "link $agent to $SSH_AUTH_SOCK"
 	esac
 	export SSH_AUTH_SOCK=$agent
 else
