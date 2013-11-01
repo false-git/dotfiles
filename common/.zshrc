@@ -194,7 +194,12 @@ if [ "x$SSH_AUTH_SOCK" != "x" ]; then
 	    # SSH_AUTH_SOCKの中身が $agent
 	fi
     else
-	echo "invalid ssh-agent"
+        # SSH_AUTH_SOCKが無効
+	if [ -S $agent ]; then
+	    export SSH_AUTH_SOCK=$agent
+	else
+	    echo "invalid ssh-agent"
+	fi
     fi
 else
     # 環境変数SSH_AUTH_SOCKが存在していない
