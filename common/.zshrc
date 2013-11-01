@@ -178,32 +178,33 @@ lockfile="$HOME/tmp/ssh-agent-lock"
 if [ -x /usr/bin/lockfile ]; then
     /usr/bin/lockfile $lockfile
 fi
-if [ -S $agent ]; then
-	if [ "x$SSH_AUTH_SOCK" != "x$agent" ]; then
-		export SSH_AUTH_SOCK_ORIG=`readlink $agent`
-		if [ "x$SSH_AUTH_SOCK" != "x$SSH_AUTH_SOCK_ORIG" ]; then
-		    if [ -S $SSH_AUTH_SOCK ]; then
-			rm -f $agent
-			ln -snf "$SSH_AUTH_SOCK" $agent
-			echo "relink $agent from $SSH_AUTH_SOCK_ORIG to $SSH_AUTH_SOCK"
-		    else
-			echo "reuse link $agent from $SSH_AUTH_SOCK to $SSH_AUTH_SOCK_ORIG"
-		    fi
-		else
-		    echo "reuse link $agent to $SSH_AUTH_SOCK_ORIG"
-		fi
-	fi
-	export SSH_AUTH_SOCK=$agent
-elif [ -S "$SSH_AUTH_SOCK" ]; then
-	case $SSH_AUTH_SOCK in
-	/tmp/*/agent.[0-9]*|/tmp/launch-*/Listeners|/tmp/keyring-*/ssh)
-		ln -snf "$SSH_AUTH_SOCK" $agent
+if [ "x$SSH_AUTH_SOCK" != "x" ]; then
+    # 環境変数SSH_AUTH_SOCKが存在している
+    if [ -S "$SSH_AUTH_SOCK" ]; then
+        # SSH_AUTH_SOCKがソケットである
+	if [ "$SSH_AUTH_SOCK" != "$agent" ]; then
+	    # SSH_AUTH_SOCKの中身が $agent でない
+	    export SSH_AUTH_SOCK_ORIG=`readlink $agent`
+	    if [ "x$SSH_AUTH_SOCK" != "x$SSH_AUTH_SOCK_ORIG" ]; then
+		ln -snf $SSH_AUTH_SOCK $agent
 		echo "link $agent to $SSH_AUTH_SOCK"
-	esac
-	export SSH_AUTH_SOCK=$agent
+	    fi
+	    export SSH_AUTH_SOCK=$agent
+	else
+	    # SSH_AUTH_SOCKの中身が $agent
+	fi
+    else
+	echo "invalid ssh-agent"
+    fi
 else
+    # 環境変数SSH_AUTH_SOCKが存在していない
+    if [ -S $agent ]; then
+	export SSH_AUTH_SOCK=$agent
+    else
 	echo "no ssh-agent"
+    fi
 fi
+    
 if [ -f $lockfile ]; then
     rm -f $lockfile
 fi
