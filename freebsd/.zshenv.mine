@@ -1,8 +1,10 @@
 export JAVA_HOME=/usr/local/jdk
 export EDITOR=emacs
 export PAGER=lv
+export LV=-c
 export BLOCKSIZE=K
-export LANG=ja_JP.eucJP
+#export LANG=ja_JP.eucJP
+export LANG=ja_JP.UTF-8
 #export TZ=JST-9
 export HTTP_PROXY=http://localhost:3128/
 export ORACLE_BASE=/home/oracle
@@ -14,4 +16,4 @@ export GOROOT=$HOME/go
 export GOARCH=386
 export GOOS=freebsd
 export GOBIN=$GOROOT/bin
-export PATH=/usr/local/texlive/p2009/bin/i386-unknown-freebsd8.2:$JAVA_HOME/bin:$ORACLE_HOME/bin:$GOBIN:$HOME/bin:$PATH
+export PATH=/usr/local/heroku-client:/usr/local/texlive/p2009/bin/i386-unknown-freebsd8.2:$JAVA_HOME/bin:$ORACLE_HOME/bin:$GOBIN:$HOME/bin:$PATH
