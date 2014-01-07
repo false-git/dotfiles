@@ -1,7 +1,7 @@
 export JAVA_HOME=/usr/local/jdk
 export EDITOR=emacs
 export PAGER=lv
-export LV=-c
+export LV="-c -Ou8"
 export BLOCKSIZE=K
 #export LANG=ja_JP.eucJP
 export LANG=ja_JP.UTF-8
