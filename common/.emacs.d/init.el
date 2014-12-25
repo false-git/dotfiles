@@ -281,6 +281,6 @@ in or out whenever you toggle the read-only flag."
 
 ;; 個別環境用設定の読み込み
 (condition-case err
-    (load-file "$HOME/.emacs.local")
+    (load-file "$HOME/.emacs.d/init-local.el")
   (file-error (message "%s" (error-message-string err)))
 )

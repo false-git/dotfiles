@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo commonの下と、引数で指定したディレクトリにある.ファイルを、
+echo commonの下と、引数で指定したディレクトリにあるファイルを、
 echo ホームディレクトリにシンボリックリンクを張ります。
 echo 元のファイルは削除されます。
 echo 問題がある場合はここで Ctrl+C を押してください。
@@ -10,17 +10,32 @@ echo
 read a
 echo
 
+mklink() {
+    for i in * .??*
+    do
+	if [ -d "$i" ]
+	then
+	    echo "  $2$i/"
+	    cd "$i"
+	    mkdir -p "$HOME$1/$i"
+	    mklink "$1/$i" "  $2"
+	    cd ..
+	elif [ -f "$i" ]
+	then
+	    echo "  $2$i"
+	    target_file="$HOME$1/$i"
+	    if [ -e "$target_file" -o -L "$target_file" ]
+	    then
+		rm -f "$target_file"
+	    fi
+	    ln -s "`pwd`/$i" "$HOME$1/"
+	fi
+    done
+}
+
 echo common/
 cd common
-for i in .??*
-do
-echo "  $i"
-if [ -e $HOME/$i -o -L $HOME/$i ]
-then
-    rm -f $HOME/$i
-fi
-ln -s `pwd`/$i $HOME/
-done
+mklink "" ""
 cd ..
 
 mkdir -p $HOME/.emacs.d
@@ -31,14 +46,6 @@ if [ -d "$1" ]
 then
 echo $1/
 cd $1
-for i in .??*
-do
-echo "  $i"
-if [ -e $HOME/$i -o -L $HOME/$i ]
-then
-    rm -f $HOME/$i
-fi
-ln -s `pwd`/$i $HOME/
-done
+mklink "" ""
 cd ..
 fi
