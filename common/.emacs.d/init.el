@@ -1,3 +1,9 @@
+;; package
+(require 'package)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+
 ;; 共通
 (setq debug-on-error t) ; エラーが出たらtraceを出す
 (setq make-backup-files nil) ; バックアップファイルを作らない
@@ -146,13 +152,13 @@ in or out whenever you toggle the read-only flag."
 (condition-case err
     (progn
       (require 'anything-startup)
-      (anything-iswitchb-setup)
       ;  (global-set-key "\^x\^f" 'anything-filelist+)
       (define-key anything-map "\C-p" 'anything-previous-line)
       (define-key anything-map "\C-n" 'anything-next-line)
       (define-key anything-map "\C-v" 'anything-next-page)
       (define-key anything-map "\M-v" 'anything-previous-page)
       (setq anything-command-map-prefix-key "\C-c\C-f")
+      (anything-read-string-mode 1)
       )
   (file-error (message "%s" (error-message-string err)))
 )
@@ -161,8 +167,6 @@ in or out whenever you toggle the read-only flag."
 (condition-case err
     (progn
       (require 'auto-complete-config)
-      (add-to-list 'ac-dictionary-directories "/opt/local/share/emacs/site-lisp/ac-dict") ; Mac OS X
-      (add-to-list 'ac-dictionary-directories "/usr/local/share/emacs/site-lisp/ac-dict") ; FreeBSD
       (ac-config-default)
       )
   (file-error (message "%s" (error-message-string err)))
