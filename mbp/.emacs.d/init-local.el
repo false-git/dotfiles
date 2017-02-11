@@ -119,3 +119,5 @@
 (setq mew-proto "%")
 ;; (setq mew-imap-user "your IMAP account")  ;; (user-login-name)
 (setq mew-imap-server "sv.wizard-limit.net")
+;(global-set-key [?¥] [?\\])
+(global-set-key [?\M-¥] [?\\])
