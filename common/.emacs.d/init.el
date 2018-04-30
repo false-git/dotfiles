@@ -8,6 +8,13 @@
   (package-install 'use-package ))
 
 ;; 共通
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (setq debug-on-error t) ; エラーが出たらtraceを出す
 (setq make-backup-files nil) ; バックアップファイルを作らない
 (setq scroll-step 1) ; 画面外にカーソル移動したら行単位でスクロール
