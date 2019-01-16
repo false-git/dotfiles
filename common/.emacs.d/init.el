@@ -375,10 +375,11 @@ in or out whenever you toggle the read-only flag."
              ("M-i" . rtags-imenu))
   )
 
-;; package
-(require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+;; go-mode
+(condition-case err
+    (require 'go-mode-load)
+  (file-error (message "%s" (error-message-string err)))
+)
 
 ;; 個別環境用設定の読み込み
 (condition-case err
