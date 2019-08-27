@@ -1,8 +1,11 @@
 ;; package
 (require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+                                        ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package ))
 
 ;; 共通
 (setq debug-on-error t) ; エラーが出たらtraceを出す
@@ -14,52 +17,58 @@
 (setq next-line-add-newlines t) ; 最終行でカーソルの下/C-n で行追加
 (setq require-final-newline t) ; 最終行には必ず改行コードを入れる
 (setq browse-url-browser-function 'w3m-browse-url) ; w3m使う
-;(setq display-time-day-and-date t) ; 日時を表示
+                                        ;(setq display-time-day-and-date t) ; 日時を表示
 (setq display-time-format "%H:%M %m/%d") ; 日時のフォーマット指定
 (if window-system nil (menu-bar-mode -1))
 (setq vc-follow-symlinks t) ; Version controlされたファイルに対するsymbolic link を開くときは、ファイルの実体を開く
 (display-time) ; モードラインに日時を表示
 (server-start) ; emacsclient用にemacs-server起動
+(global-auto-revert-mode 1) ; ファイルに変更があったら読み込む
 
 ;; ローカル関数
-; Blanced Blaketto
+                                        ; Blanced Blaketto
 (defun find-matching-paren ()
   "Locate the matching paren.  It's a hack right now."
   (interactive)
   (cond ((looking-at "[[({]") (forward-sexp 1) (backward-char 1))
         ((looking-at "[])}]") (forward-char 1) (backward-sexp 1))
         (t (ding))))
-; c-mode用hook
+                                        ; c-mode用hook
 (defun my-c-def ()
-;;  (setq c-argdecl-indent 4 )
-;;  (setq c-continued-statement-offset 4)
-;;  (setq c-indent-level 4)
-;;  (setq c-label-offset -2)
-;;  (setq c-tab-always-indent nil )
+  ;;  (setq c-argdecl-indent 4 )
+  ;;  (setq c-continued-statement-offset 4)
+  ;;  (setq c-indent-level 4)
+  ;;  (setq c-label-offset -2)
+  ;;  (setq c-tab-always-indent nil )
   (setq tab-width 8)
-;;  (setq comment-column 0)
+  ;;  (setq comment-column 0)
   (c-set-offset 'case-label 2)
   (c-set-offset 'statement-case-intro 2)
+  (c-set-offset 'arglist-intro '++)
   (c-set-offset 'arglist-cont-nonempty 4)
   (c-set-offset 'access-label -2)
+  (c-set-offset 'innamespace 0)
   (setq c-basic-offset 4)
   (local-set-key "\^m" 'newline-and-indent)
   (local-set-key "\^cc" 'compile)
   (if (and (boundp 'MULE) (eq window-system 'x)) (font-lock-mode 1))
+  (add-hook 'before-save-hook 'clang-format-buffer nil 'local)
+  (flycheck-mode t)
   ;;(boil)
-)
-; perl-mode用hook
+  )
+
+                                        ; perl-mode用hook
 (defun my-perl-def ()
   (local-set-key "\^m" 'newline-and-indent)
-  ;(boil)
-)
-; text-mode用hook
+                                        ;(boil)
+  )
+                                        ; text-mode用hook
 (defun auto-fill-mode-on ()
   (auto-fill-mode 1)
   (setq fill-column 68)
   ;;(boil)
-)
-; javaのaccessorを追加する
+  )
+                                        ; javaのaccessorを追加する
 (defun insert-accessor (type name longname)
   (setq capitalName (concat (upcase (substring name 0 1)) (substring name 1 nil)))
   (insert-string (concat "
@@ -79,8 +88,8 @@
         return " name ";
     }
 "))
-)
-; 現在のregionにあるメンバ変数に対するaccessorを追加する(java)
+  )
+                                        ; 現在のregionにあるメンバ変数に対するaccessorを追加する(java)
 (defun insert-accessor-region ()
   (interactive)
   (setq text (car kill-ring))
@@ -99,8 +108,8 @@
     (setq name (match-string 2 l))
     (insert-accessor type name longname)
     )
-)
-; emacs22までのtoggle-read-only 
+  )
+                                        ; emacs22までのtoggle-read-only 
 (defun my-toggle-read-only (&optional verbose)
   "Change read-only status of current buffer, perhaps via version control.
 
@@ -134,7 +143,7 @@ in or out whenever you toggle the read-only flag."
 (add-hook 'java-mode-hook 'my-c-def)
 (add-hook 'perl-mode-hook 'my-perl-def)
 (add-hook 'text-mode-hook 'auto-fill-mode-on)
-; 日本語ファイル名をデコード
+                                        ; 日本語ファイル名をデコード
 (eval-after-load "mime"
   '(defadvice mime-entity-filename (around mime-decode activate)
      ad-do-it
@@ -145,14 +154,14 @@ in or out whenever you toggle the read-only flag."
                                       'iso-2022-jp))))))
 
 ;; autoload
-; riece
+                                        ; riece
 (autoload 'riece "riece" "Start Riece" t)
 
 ;; anything用の設定
 (condition-case err
     (progn
       (require 'anything-startup)
-      ;  (global-set-key "\^x\^f" 'anything-filelist+)
+                                        ;  (global-set-key "\^x\^f" 'anything-filelist+)
       (define-key anything-map "\C-p" 'anything-previous-line)
       (define-key anything-map "\C-n" 'anything-next-line)
       (define-key anything-map "\C-v" 'anything-next-page)
@@ -161,16 +170,30 @@ in or out whenever you toggle the read-only flag."
       (anything-read-string-mode 1)
       )
   (file-error (message "%s" (error-message-string err)))
-)
+  )
 
-;; auto-complete用の設定
+;; helm用の設定
 (condition-case err
     (progn
-      (require 'auto-complete-config)
-      (ac-config-default)
+      (require 'helm)
+      (require 'helm-config)
+      (global-set-key "\^x\^f" 'helm-find-files)
+      (global-set-key "\M-x" 'helm-M-x)
+      (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+      (global-set-key "\^z" 'helm-select-action)
+      (helm-mode 1)
       )
   (file-error (message "%s" (error-message-string err)))
-)
+  )
+
+;; auto-complete用の設定
+;; (condition-case err
+;;     (progn
+;;       (require 'auto-complete-config)
+;;       (ac-config-default)
+;;       )
+;;   (file-error (message "%s" (error-message-string err)))
+;; )
 
 ;; wanderlust用の設定
 (condition-case err
@@ -186,7 +209,7 @@ in or out whenever you toggle the read-only flag."
       (add-hook 'wl-folder-mode-hook 'my-wl-folder-def)
       )
   (file-error (message "%s" (error-message-string err)))
-)
+  )
 
 ;; windows.el用の設定
 (condition-case err
@@ -221,70 +244,106 @@ in or out whenever you toggle the read-only flag."
       (setq win:resumed-frame-offset-y 4)
       )
   (file-error (message "%s" (error-message-string err)))
-)
+  )
 
 ;; zencoding用の設定
-(condition-case err
-    (progn
-      (require 'zencoding-mode)
-      (add-hook 'html-mode-hook 'zencoding-mode)
-      )
-  (file-error (message "%s" (error-message-string err)))
-)
+(use-package zencoding-mode
+  :commands zencoding-mode
+  :init
+  (add-hook 'html-mode-hook 'zencoding-mode)
+  )
 
 ;; yasnippetの設定
-(condition-case err
-    (progn
-      (require 'yasnippet)
-      (yas/initialize)
-      (yas/load-directory "~/.emacs.d/snippets")
-      (setq yas/prompt-functions '(yas/dropdown-prompt))
-      )
-  (file-error (message "%s" (error-message-string err)))
-)
+(use-package yasnippet
+  :config
+  (yas/initialize)
+  (yas/load-directory "~/.emacs.d/snippets")
+  (setq yas/prompt-functions '(yas/dropdown-prompt))
+  )
 
 ;; xcscopeの設定
-(condition-case err
-    (progn
-      (require 'xcscope)
-      )
-  (file-error (message "%s" (error-message-string err)))
-)
+                                        ;(use-package xcscope)
 
 ;; org-mode, rememberの設定
-(condition-case err
-    (progn
-      (require 'org)
-      (setq org-default-notes-file (concat org-directory "/notes.org"))
-      (setq remember-data-file org-default-notes-file)
-      (setq org-mobile-inbox-for-pull (concat org-directory "/flagged.org"))
-      (setq org-mobile-directory "~/Dropbox/MobileOrg/")
-      (setq org-agenda-files (list org-default-notes-file org-mobile-inbox-for-pull (concat org-directory "/memo.org")))
-      (setq org-log-done 'time) ; TODOがDONEになったときに時刻を記録
-      (setq org-capture-templates
-	    '(
-	      ("t" "Task" entry (file+headline "" "Tasks")
-	       "* TODO %?\n  CREATED: %U\n  SCHEDULED: %t\n  DEADLINE: %t\n  %a")
-	      ))
-      (global-set-key "\C-cl" 'org-store-link)
-      (global-set-key "\C-cc" 'org-capture)
-      (global-set-key "\C-ca" 'org-agenda)
-      (global-set-key "\C-cb" 'org-iswitchb)
-      )
-  (file-error (message "%s" (error-message-string err)))
-)
-
-;; go-mode
-(condition-case err
-    (require 'go-mode-load)
-  (file-error (message "%s" (error-message-string err)))
-)
+(use-package org
+  :commands org-mode
+  :config
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (setq remember-data-file org-default-notes-file)
+  (setq org-mobile-inbox-for-pull (concat org-directory "/flagged.org"))
+  (setq org-mobile-directory "~/Dropbox/MobileOrg/")
+  (setq org-agenda-files (list org-default-notes-file org-mobile-inbox-for-pull (concat org-directory "/memo.org")))
+  (setq org-log-done 'time) ; TODOがDONEになったときに時刻を記録
+  (setq org-capture-templates
+        '(
+          ("t" "Task" entry (file+headline "" "Tasks")
+           "* TODO %?\n  CREATED: %U\n  SCHEDULED: %t\n  DEADLINE: %t\n  %a")
+          ))
+  :bind (("\C-cl" . org-store-link)
+         ("\C-cc" . org-capture)
+         ("\C-ca" . org-agenda)
+         ("\C-cb" . org-iswitchb))
+  )
 
 ;; multi-term
-(autoload 'multi-term "multi-term" "multi-term" t)
+(use-package multi-term
+  :commands multi-term)
+
+;; clang-format
+(use-package clang-format
+  :config
+  (setq clang-format-style-option "llvm")
+  (setq clang-format-executable "clang-format-6.0")
+  )
+
+;; company
+(use-package company
+  :config
+  (global-company-mode 1)
+  (global-set-key (kbd "C-M-i") 'company-complete)
+  ;; (setq company-idle-delay nil) ; 自動補完をしない
+  (bind-keys :map company-active-map
+             ("C-n" . company-select-next)
+             ("C-p" . company-select-previous))
+  (bind-keys :map company-search-map
+             ("C-n" . company-select-next)
+             ("C-p" . company-select-previous))
+  (bind-keys :map company-active-map
+             ("<tab>" . company-complete-selection))
+  )
+
+;; irony
+(use-package irony
+  :commands (company-irony irony-mode)
+  :config
+  (custom-set-variables '(irony-additional-clang-options '("-std=c++17")))
+  (add-to-list 'company-backends 'company-irony)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  (add-hook 'c-mode-common-hook 'irony-mode)
+  )
+
+;; flycheck
+(use-package flycheck
+  :commands flycheck-mode
+  :config
+  (setq flycheck-clang-warnings `(,@flycheck-clang-warnings
+                                  "no-pragma-once-outside-header"))
+  (when (locate-library "flycheck-irony")
+    (flycheck-irony-setup))
+  )
+
+;; blacken
+(use-package blacken
+  :init
+  (add-hook 'python-mode-hook 'blacken-mode)
+  :commands blacken-mode)
 
 ;; 個別環境用設定の読み込み
 (condition-case err
     (load-file "$HOME/.emacs.d/init-local.el")
   (file-error (message "%s" (error-message-string err)))
-)
+  )
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
