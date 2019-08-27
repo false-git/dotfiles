@@ -1,6 +1,6 @@
 ;; package
 (require 'package)
-                                        ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
@@ -17,7 +17,6 @@
 (setq next-line-add-newlines t) ; 最終行でカーソルの下/C-n で行追加
 (setq require-final-newline t) ; 最終行には必ず改行コードを入れる
 (setq browse-url-browser-function 'w3m-browse-url) ; w3m使う
-                                        ;(setq display-time-day-and-date t) ; 日時を表示
 (setq display-time-format "%H:%M %m/%d") ; 日時のフォーマット指定
 (if window-system nil (menu-bar-mode -1))
 (setq vc-follow-symlinks t) ; Version controlされたファイルに対するsymbolic link を開くときは、ファイルの実体を開く
@@ -25,15 +24,15 @@
 (server-start) ; emacsclient用にemacs-server起動
 (global-auto-revert-mode 1) ; ファイルに変更があったら読み込む
 
-;; ローカル関数
-                                        ; Blanced Blaketto
+;;; ローカル関数
+;; Blanced Blaketto
 (defun find-matching-paren ()
   "Locate the matching paren.  It's a hack right now."
   (interactive)
   (cond ((looking-at "[[({]") (forward-sexp 1) (backward-char 1))
         ((looking-at "[])}]") (forward-char 1) (backward-sexp 1))
         (t (ding))))
-                                        ; c-mode用hook
+;; c-mode用hook
 (defun my-c-def ()
   ;;  (setq c-argdecl-indent 4 )
   ;;  (setq c-continued-statement-offset 4)
@@ -57,18 +56,18 @@
   ;;(boil)
   )
 
-                                        ; perl-mode用hook
+;; perl-mode用hook
 (defun my-perl-def ()
   (local-set-key "\^m" 'newline-and-indent)
-                                        ;(boil)
+  ;;(boil)
   )
-                                        ; text-mode用hook
+;; text-mode用hook
 (defun auto-fill-mode-on ()
   (auto-fill-mode 1)
   (setq fill-column 68)
   ;;(boil)
   )
-                                        ; javaのaccessorを追加する
+;; javaのaccessorを追加する
 (defun insert-accessor (type name longname)
   (setq capitalName (concat (upcase (substring name 0 1)) (substring name 1 nil)))
   (insert-string (concat "
@@ -89,7 +88,7 @@
     }
 "))
   )
-                                        ; 現在のregionにあるメンバ変数に対するaccessorを追加する(java)
+;; 現在のregionにあるメンバ変数に対するaccessorを追加する(java)
 (defun insert-accessor-region ()
   (interactive)
   (setq text (car kill-ring))
@@ -109,7 +108,7 @@
     (insert-accessor type name longname)
     )
   )
-                                        ; emacs22までのtoggle-read-only 
+;; emacs22までのtoggle-read-only 
 (defun my-toggle-read-only (&optional verbose)
   "Change read-only status of current buffer, perhaps via version control.
 
@@ -137,13 +136,13 @@ in or out whenever you toggle the read-only flag."
 (global-set-key "\C-l" 'recenter) ; C-l でrecenter
 (global-set-key "\C-x\C-q" 'my-toggle-read-only)
 
-;; hooks
+;;; hooks
 (add-hook 'c-mode-hook 'my-c-def)
 (add-hook 'c++-mode-hook 'my-c-def)
 (add-hook 'java-mode-hook 'my-c-def)
 (add-hook 'perl-mode-hook 'my-perl-def)
 (add-hook 'text-mode-hook 'auto-fill-mode-on)
-                                        ; 日本語ファイル名をデコード
+;; 日本語ファイル名をデコード
 (eval-after-load "mime"
   '(defadvice mime-entity-filename (around mime-decode activate)
      ad-do-it
@@ -153,15 +152,15 @@ in or out whenever you toggle the read-only flag."
                                       ad-return-value
                                       'iso-2022-jp))))))
 
-;; autoload
-                                        ; riece
+;;; autoload
+;; riece
 (autoload 'riece "riece" "Start Riece" t)
 
 ;; anything用の設定
 (condition-case err
     (progn
       (require 'anything-startup)
-                                        ;  (global-set-key "\^x\^f" 'anything-filelist+)
+      ;; (global-set-key "\^x\^f" 'anything-filelist+)
       (define-key anything-map "\C-p" 'anything-previous-line)
       (define-key anything-map "\C-n" 'anything-next-line)
       (define-key anything-map "\C-v" 'anything-next-page)
@@ -262,7 +261,7 @@ in or out whenever you toggle the read-only flag."
   )
 
 ;; xcscopeの設定
-                                        ;(use-package xcscope)
+;;(use-package xcscope)
 
 ;; org-mode, rememberの設定
 (use-package org
