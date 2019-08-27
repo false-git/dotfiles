@@ -337,6 +337,22 @@ in or out whenever you toggle the read-only flag."
   (add-hook 'python-mode-hook 'blacken-mode)
   :commands blacken-mode)
 
+;; lsp-mode
+(use-package lsp-mode
+  :hook ((python-mode c++-mode). lsp)
+;;  :hook (python-mode. lsp)
+  :commands lsp
+  :config (setq lsp-clients-clangd-executable "clangd-6.0")
+  )
+(use-package company-lsp
+  :commands company-lsp)
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :config
+  (add-to-list 'company-backends 'company-lsp)
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+
 ;; 個別環境用設定の読み込み
 (condition-case err
     (load-file "$HOME/.emacs.d/init-local.el")
