@@ -261,7 +261,7 @@ in or out whenever you toggle the read-only flag."
   )
 
 ;; xcscopeの設定
-;;(use-package xcscope)
+(use-package xcscope)
 
 ;; org-mode, rememberの設定
 (use-package org
@@ -299,7 +299,7 @@ in or out whenever you toggle the read-only flag."
 (use-package company
   :config
   (global-company-mode 1)
-  (global-set-key (kbd "C-M-i") 'company-complete)
+  (global-set-key (kbd "<C-tab>") 'company-complete)
   ;; (setq company-idle-delay nil) ; 自動補完をしない
   (bind-keys :map company-active-map
              ("C-n" . company-select-next)
@@ -339,7 +339,7 @@ in or out whenever you toggle the read-only flag."
 
 ;; lsp-mode
 (use-package lsp-mode
-  :hook ((python-mode c++-mode). lsp)
+  :hook ((python-mode c++-mode) . lsp)
 ;;  :hook (python-mode. lsp)
   :commands lsp
   :config (setq lsp-clients-clangd-executable "clangd-6.0")
@@ -352,6 +352,32 @@ in or out whenever you toggle the read-only flag."
   (add-to-list 'company-backends 'company-lsp)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
+(use-package rtags
+  :hook (c++-mode . rtags-start-process-unless-running)
+  :config
+  (rtags-enable-standard-keybindings)
+  (setq rtags-completions-enabled t)
+  (setq rtags-display-result-backend 'helm)
+  (add-to-list 'company-backends 'company-rtags)
+  (bind-keys :map c-mode-base-map
+             ("C-." . rtags-find-symbol-at-point)
+             ("C-," . rtags-find-references-at-point)
+             ("C--" . rtags-location-stack-back)
+             ("M-;" . rtags-find-file)
+             ("M-." . rtags-find-symbol)
+             ("M-," . rtags-find-references)
+             ("C-<" . rtags-find-virtuals-at-point)
+             ("M-i" . rtags-imenu))
+  (bind-keys :map global-map
+             ("C-." . rtags-find-symbol-at-point)
+             ("C-," . rtags-find-references-at-point)
+             ("C--" . rtags-location-stack-back)
+             ("M-;" . rtags-find-file)
+             ("M-." . rtags-find-symbol)
+             ("M-," . rtags-find-references)
+             ("C-<" . rtags-find-virtuals-at-point)
+             ("M-i" . rtags-imenu))
+  )
 
 ;; 個別環境用設定の読み込み
 (condition-case err
