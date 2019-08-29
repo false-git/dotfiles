@@ -121,3 +121,11 @@
 (setq mew-imap-server "sv.wizard-limit.net")
 ;(global-set-key [?¥] [?\\])
 (global-set-key [?\M-¥] [?\\])
+
+(require 'company)
+(require 'irony)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(add-to-list 'company-backends 'company-irony) ; backend追加
