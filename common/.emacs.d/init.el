@@ -255,9 +255,7 @@ in or out whenever you toggle the read-only flag."
 ;; yasnippetの設定
 (use-package yasnippet
   :config
-  (yas/initialize)
-  (yas/load-directory "~/.emacs.d/snippets")
-  (setq yas/prompt-functions '(yas/dropdown-prompt))
+  (yas-global-mode 1)
   )
 
 ;; xcscopeの設定
@@ -313,6 +311,7 @@ in or out whenever you toggle the read-only flag."
 
 ;; irony
 (use-package irony
+  :disabled t
   :commands (company-irony irony-mode)
   :config
   (custom-set-variables '(irony-additional-clang-options '("-std=c++17")))
@@ -323,12 +322,12 @@ in or out whenever you toggle the read-only flag."
 
 ;; flycheck
 (use-package flycheck
-  :commands flycheck-mode
   :config
   (setq flycheck-clang-warnings `(,@flycheck-clang-warnings
                                   "no-pragma-once-outside-header"))
-  (when (locate-library "flycheck-irony")
-    (flycheck-irony-setup))
+  ;;(when (locate-library "flycheck-irony")
+  ;;  (flycheck-irony-setup))
+  (global-flycheck-mode)
   )
 
 ;; blacken
@@ -342,15 +341,14 @@ in or out whenever you toggle the read-only flag."
   :hook ((python-mode c++-mode) . lsp)
 ;;  :hook (python-mode. lsp)
   :commands lsp
-  :config (setq lsp-clients-clangd-executable "clangd-6.0")
+  :config
+  ;; clangdのファイル名やパスが違う場合は、init-local.elに以下を書く
+  ;;(setq lsp-clients-clangd-executable "clangd-6.0")
+  (setq lsp-prefer-flymake nil)
   )
 (use-package company-lsp
   :commands company-lsp)
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :config
-  (add-to-list 'company-backends 'company-lsp)
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+(use-package lsp-ui :commands lsp-ui-mode)
 
 (use-package rtags
   :hook (c++-mode . rtags-start-process-unless-running)
