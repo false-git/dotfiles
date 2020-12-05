@@ -1,8 +1,9 @@
 ;; package
 (require 'package)
 ;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(package-initialize)
+(when (version< emacs-version "27.0") (package-initialize))
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package ))
@@ -297,7 +298,6 @@ in or out whenever you toggle the read-only flag."
 (use-package clang-format
   :config
   (setq clang-format-style-option "llvm")
-  (setq clang-format-executable "clang-format-6.0")
   )
 
 ;; company
@@ -358,6 +358,7 @@ in or out whenever you toggle the read-only flag."
 (use-package lsp-ui :commands lsp-ui-mode)
 
 (use-package rtags
+  :disabled t
   :hook (c++-mode . rtags-start-process-unless-running)
   :config
   (rtags-enable-standard-keybindings)

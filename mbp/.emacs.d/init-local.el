@@ -122,10 +122,5 @@
 ;(global-set-key [?¥] [?\\])
 (global-set-key [?\M-¥] [?\\])
 
-(require 'company)
-(require 'irony)
-(add-hook 'c-mode-hook 'irony-mode)
-(add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'objc-mode-hook 'irony-mode)
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-(add-to-list 'company-backends 'company-irony) ; backend追加
+(setq lsp-clients-clangd-executable "/usr/local/opt/llvm/bin/clangd")
+(setq clang-format-executable "/usr/local/bin/clang-format")
