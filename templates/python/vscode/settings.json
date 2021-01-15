@@ -1,8 +1,6 @@
 {
     "editor.formatOnSave": true,
     "files.autoGuessEncoding": true,
-    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
-    "terminal.integrated.shell.linux": "/bin/zsh",
     "terminal.integrated.allowChords": false,
     "terminal.integrated.commandsToSkipShell": [
         "-workbench.action.quickOpen",
