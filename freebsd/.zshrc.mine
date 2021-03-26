@@ -1,4 +1,2 @@
-#alias jman="LANG=ja_JP.eucJP jman"
-alias man=/usr/local/bin/man
 alias cpu="sysctl dev.cpu.0.freq"
 umask 2

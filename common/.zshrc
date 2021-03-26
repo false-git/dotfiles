@@ -131,7 +131,6 @@ alias cxx="cd ../.."
 
 alias em="emacsclient -n"
 
-alias du="du -h"
 alias df="df -h"
 
 alias su="su -l"
