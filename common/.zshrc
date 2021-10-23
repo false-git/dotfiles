@@ -172,40 +172,50 @@ esac
 
 cdpath=(~ ..)
 
-agent="$HOME/tmp/ssh-agent-$USER"
-lockfile="$HOME/tmp/ssh-agent-lock"
+agent="$HOME/.ssh/agent.sock"
+lockfile="$HOME/.ssh/agent.lock"
 if [ -x /usr/bin/lockfile ]; then
     /usr/bin/lockfile $lockfile
 fi
-if [ "x$SSH_AUTH_SOCK" != "x" ]; then
-    # 環境変数SSH_AUTH_SOCKが存在している
-    if [ -S "$SSH_AUTH_SOCK" ]; then
-        # SSH_AUTH_SOCKがソケットである
-	if [ "$SSH_AUTH_SOCK" != "$agent" ]; then
-	    # SSH_AUTH_SOCKの中身が $agent でない
-	    export SSH_AUTH_SOCK_ORIG=`readlink $agent`
-	    if [ "x$SSH_AUTH_SOCK" != "x$SSH_AUTH_SOCK_ORIG" ]; then
-		ln -snf $SSH_AUTH_SOCK $agent
-		echo "link $agent to $SSH_AUTH_SOCK"
+
+if [[ `uname -r` == *-WSL2 ]]; then
+    export SSH_AUTH_SOCK=$agent
+    ss -a | grep -q $SSH_AUTH_SOCK
+    if [ $? -ne 0   ]; then
+	rm -f $SSH_AUTH_SOCK
+	( setsid socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:"npiperelay.exe -ei -s //./pipe/openssh-ssh-agent",nofork & ) >/dev/null 2>&1
+    fi
+else
+    if [ "x$SSH_AUTH_SOCK" != "x" ]; then
+	# 環境変数SSH_AUTH_SOCKが存在している
+	if [ -S "$SSH_AUTH_SOCK" ]; then
+            # SSH_AUTH_SOCKがソケットである
+	    if [ "$SSH_AUTH_SOCK" != "$agent" ]; then
+		# SSH_AUTH_SOCKの中身が $agent でない
+		export SSH_AUTH_SOCK_ORIG=`readlink $agent`
+		if [ "x$SSH_AUTH_SOCK" != "x$SSH_AUTH_SOCK_ORIG" ]; then
+		    ln -snf $SSH_AUTH_SOCK $agent
+		    echo "link $agent to $SSH_AUTH_SOCK"
+		fi
+		export SSH_AUTH_SOCK=$agent
+	    else
+		# SSH_AUTH_SOCKの中身が $agent
 	    fi
-	    export SSH_AUTH_SOCK=$agent
 	else
-	    # SSH_AUTH_SOCKの中身が $agent
+            # SSH_AUTH_SOCKが無効
+	    if [ -S $agent ]; then
+		export SSH_AUTH_SOCK=$agent
+	    else
+		echo "invalid ssh-agent"
+	    fi
 	fi
     else
-        # SSH_AUTH_SOCKが無効
+	# 環境変数SSH_AUTH_SOCKが存在していない
 	if [ -S $agent ]; then
 	    export SSH_AUTH_SOCK=$agent
 	else
-	    echo "invalid ssh-agent"
+	    echo "no ssh-agent"
 	fi
-    fi
-else
-    # 環境変数SSH_AUTH_SOCKが存在していない
-    if [ -S $agent ]; then
-	export SSH_AUTH_SOCK=$agent
-    else
-	echo "no ssh-agent"
     fi
 fi
     
